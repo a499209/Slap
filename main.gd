@@ -3,12 +3,12 @@ extends Node2D
 @onready var field = $TileMap
 @onready var OneBall = preload("res://one_ball.tscn")
 
-var balls_width = 3
-var balls_height = 3
+var balls_width = 5
+var balls_height = 5
 @onready var offset = Vector2(field.tile_set.tile_size * 2)
 
 const PATTERNS = {
-	"start": [[0,0,"RED"],[0,2,"RED"],[1,2,"BLUE"]]
+	"start": [[0,0,Color(1,1,1)],[0,4,Color(1,0,0)],[4,0,Color(0,0,1)], [4,4,Color(0,1,0)]]
 }
 
 const IDS = {
@@ -52,7 +52,7 @@ func fill_starting_field():
 func add_one_ball(id,x,y):
 	var one_ball = OneBall.instantiate()
 	set_coord(one_ball,Vector2i(x,y))
-	one_ball.get_node("ColorRect").color = IDS[id]["color"]
+	one_ball.get_node("ColorRect").color = id
 	field.add_child(one_ball)
 	one_ball.connect("ball_pressed", Callable(self,"move_ball"))
 
@@ -85,13 +85,12 @@ func update_field():
 		if ball_id == null:
 			i.get_node("ColorRect").color = "GRAY"
 		else:
-			i.get_node("ColorRect").color = IDS[ball_id]["color"]
+			i.get_node("ColorRect").color = ball_id
 
 func get_ball_coord(ball):
 	return field.local_to_map(ball.position - offset)
 	
 func generate_new_ball_id(ball_id,addind_ball_id):
-	if ball_id == addind_ball_id:
-		return "BLUE"
-	else:
-		return "RED"
+	if ball_id == null:
+		ball_id = addind_ball_id
+	return Color((ball_id.r + addind_ball_id.r)/2,(ball_id.g + addind_ball_id.g)/2,(ball_id.b + addind_ball_id.b)/2)

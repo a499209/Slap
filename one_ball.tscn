@@ -1,0 +1,21 @@
+[gd_scene load_steps=3 format=3 uid="uid://duvx4lw0nvr1d"]
+
+[ext_resource type="Script" path="res://one_ball.gd" id="1_asum0"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_v455w"]
+size = Vector2(80, 80)
+
+[node name="One_ball" type="Node2D"]
+script = ExtResource("1_asum0")
+
+[node name="ColorRect" type="ColorRect" parent="."]
+custom_minimum_size = Vector2(80, 80)
+offset_left = -40.0
+offset_top = -40.0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="TouchScreenButton" type="TouchScreenButton" parent="."]
+shape = SubResource("RectangleShape2D_v455w")
+
+[connection signal="pressed" from="TouchScreenButton" to="." method="_on_touch_screen_button_pressed"]

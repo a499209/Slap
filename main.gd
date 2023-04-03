@@ -3,21 +3,23 @@ extends Node2D
 @onready var field = $TileMap
 @onready var OneBall = preload("res://one_ball.tscn")
 
-var balls_width = 50
-var balls_height = 50
+var balls_width = 16
+var balls_height = 16
+
+var cell_size = 40
 
 var pressed
 @onready var offset = Vector2(field.tile_set.tile_size * 2)
 
-const PATTERNS = {
+var PATTERNS = {
 	"start": [
 		[0,0,Color(1,1,1)],
-		[10,10,Color(0,1,1)],
-		[20,20,Color(1,1,0)],
-		[30,30,Color(1,0,1)],
-		[0,40,Color(1,0,0)],
-		[40,0,Color(0,0,1)],
-		[40,40,Color(0,1,0)]]
+		[floor(balls_width*0.2),floor(balls_height*0.2),Color(0,1,1)],
+		[floor(balls_width*0.4),floor(balls_height*0.4),Color(1,1,0)],
+		[floor(balls_width*0.6),floor(balls_height*0.6),Color(1,0,1)],
+		[floor(balls_width*0),floor(balls_height*1 - 1),Color(1,0,0)],
+		[floor(balls_width*1 - 1 ),floor(balls_height*0),Color(0,0,1)],
+		[floor(balls_width*1 - 1 ),floor(balls_height*1 - 1 ),Color(0,1,0)]]
 }
 
 const IDS = {
@@ -30,6 +32,8 @@ const IDS = {
 var field_arr = []
 
 func _ready():
+	field.tile_set.tile_size = Vector2(cell_size, cell_size)
+	
 	fill_starting_field_arr("start")
 	fill_starting_field()
 
@@ -62,6 +66,7 @@ func add_one_ball(id,x,y):
 	var one_ball = OneBall.instantiate()
 	set_coord(one_ball,Vector2i(x,y))
 	one_ball.get_node("ColorRect").color = id
+	one_ball.get_node("ColorRect").size = Vector2(cell_size - 1, cell_size -1)
 	field.add_child(one_ball)
 	one_ball.connect("ball_pressed", Callable(self,"move_ball"))
 

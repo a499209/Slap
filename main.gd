@@ -18,11 +18,7 @@ const IDS = {
 }
 
 
-var field_arr = [
-	[null, null, null],
-	[null, null, null],
-	[null, null, null],
-]
+var field_arr = []
 
 func _ready():
 	fill_starting_field_arr("start")
@@ -63,10 +59,12 @@ func add_one_ball(id,x,y):
 func move_ball(ball):
 	var ball_coord = get_ball_coord(ball)
 	var neibh = cut_offield_cells(field.get_surrounding_cells(ball_coord))
-	
+	var ball_id = get_ball_id(ball_coord.x,ball_coord.y)
+	if ball_id == null:
+		return
 	for i in neibh:
 		field_arr[i.x][i.y] = generate_new_ball_id(field_arr[i.x][i.y],get_ball_id(ball_coord.x,ball_coord.y))
-	field_arr[ball_coord.x][ball_coord.y] = "GRAY"
+	field_arr[ball_coord.x][ball_coord.y] = null
 	update_field()
 	
 func cut_offield_cells(cells_array):
@@ -85,7 +83,7 @@ func update_field():
 		#меняем отображение шара соотв. id в массиве
 		var ball_id = field_arr[ball_coord.x][ball_coord.y]
 		if ball_id == null:
-			pass
+			i.get_node("ColorRect").color = "GRAY"
 		else:
 			i.get_node("ColorRect").color = IDS[ball_id]["color"]
 

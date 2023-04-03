@@ -9,11 +9,11 @@ size = Vector2(80, 80)
 script = ExtResource("1_asum0")
 
 [node name="ColorRect" type="ColorRect" parent="."]
-custom_minimum_size = Vector2(80, 80)
-offset_left = -40.0
-offset_top = -40.0
-offset_right = 40.0
-offset_bottom = 40.0
+custom_minimum_size = Vector2(14, 14)
+offset_left = -7.0
+offset_top = -7.0
+offset_right = 7.0
+offset_bottom = 7.0
 
 [node name="TouchScreenButton" type="TouchScreenButton" parent="."]
 shape = SubResource("RectangleShape2D_v455w")

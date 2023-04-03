@@ -3,12 +3,21 @@ extends Node2D
 @onready var field = $TileMap
 @onready var OneBall = preload("res://one_ball.tscn")
 
-var balls_width = 5
-var balls_height = 5
+var balls_width = 50
+var balls_height = 50
+
+var pressed
 @onready var offset = Vector2(field.tile_set.tile_size * 2)
 
 const PATTERNS = {
-	"start": [[0,0,Color(1,1,1)],[0,4,Color(1,0,0)],[4,0,Color(0,0,1)], [4,4,Color(0,1,0)]]
+	"start": [
+		[0,0,Color(1,1,1)],
+		[10,10,Color(0,1,1)],
+		[20,20,Color(1,1,0)],
+		[30,30,Color(1,0,1)],
+		[0,40,Color(1,0,0)],
+		[40,0,Color(0,0,1)],
+		[40,40,Color(0,1,0)]]
 }
 
 const IDS = {
@@ -56,8 +65,19 @@ func add_one_ball(id,x,y):
 	field.add_child(one_ball)
 	one_ball.connect("ball_pressed", Callable(self,"move_ball"))
 
-func move_ball(ball):
-	var ball_coord = get_ball_coord(ball)
+#func move_ball(ball):
+#	var ball_coord = get_ball_coord(ball)
+#	var neibh = cut_offield_cells(field.get_surrounding_cells(ball_coord))
+#	var ball_id = get_ball_id(ball_coord.x,ball_coord.y)
+#	if ball_id == null:
+#		return
+#	for i in neibh:
+#		field_arr[i.x][i.y] = generate_new_ball_id(field_arr[i.x][i.y],get_ball_id(ball_coord.x,ball_coord.y))
+#	field_arr[ball_coord.x][ball_coord.y] = null
+#	update_field()
+	
+func move_ball_from_coord(coord):
+	var ball_coord = coord
 	var neibh = cut_offield_cells(field.get_surrounding_cells(ball_coord))
 	var ball_id = get_ball_id(ball_coord.x,ball_coord.y)
 	if ball_id == null:
@@ -75,7 +95,8 @@ func cut_offield_cells(cells_array):
 	return cutted_array
 
 func get_ball_id(x,y):
-	return field_arr[x][y]
+	if clamp(x, 0 , balls_width - 1 ) == x and clamp(y, 0 , balls_height - 1) == y:
+		return field_arr[x][y]
 
 func update_field():
 	for i in field.get_children():
@@ -94,3 +115,10 @@ func generate_new_ball_id(ball_id,addind_ball_id):
 	if ball_id == null:
 		ball_id = addind_ball_id
 	return Color((ball_id.r + addind_ball_id.r)/2,(ball_id.g + addind_ball_id.g)/2,(ball_id.b + addind_ball_id.b)/2)
+
+func _input(event):
+#	print(event)
+	if event is InputEventScreenTouch:
+		pressed = event.is_pressed()
+	if pressed:
+		move_ball_from_coord(field.local_to_map(get_global_mouse_position() - offset))
